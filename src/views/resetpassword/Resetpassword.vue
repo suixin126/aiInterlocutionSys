@@ -29,7 +29,6 @@
         <el-form-item label="想起密码？" prop="pass">
           <el-link type="primary">去登录</el-link>
         </el-form-item>
-
       </div>
     </div>
 
@@ -42,11 +41,6 @@ const input = ref('')
 </script>
 
 <style scoped>
-body {
-  margin: 0;
-  padding: 0;
-}
-
 .container {
   width: 50%;
   display: flex;
