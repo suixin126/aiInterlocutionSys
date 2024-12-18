@@ -1,36 +1,40 @@
 <template>
   <div class="login-contain">
+    <div class="login-bg"></div>
     <div class="login-box">
-      <div class="login-logo">LOGO</div>
-      <div class="login-user_name">
-        <el-input
-          v-model="userName"
-          style="width: 300px"
-          placeholder="请输入用户名"
-          size="large"
-          :prefix-icon="User"
-        />
-      </div>
-      <div class="login-password">
-        <el-input
-          v-model="input"
-          style="width: 300px"
-          type="password"
-          placeholder="请输入密码"
-          size="large"
-          show-password
-          :prefix-icon="Lock"
-        />
-      </div>
-      <div class="login-btn">
-        <el-button type="primary" plain>登录</el-button>
-      </div>
-      <div class="login-text">
-        <div class="remain-pwd">
-            <el-checkbox v-model="checked" label="记住密码" size="large" />
+      <div class="login-box-left"></div>
+      <div class="login-box-right">
+        <div class="login-logo">LOGO</div>
+        <div class="login-user_name">
+          <el-input
+            v-model="userName"
+            style="width: 300px"
+            placeholder="请输入用户名"
+            size="large"
+            :prefix-icon="User"
+          />
         </div>
-        <div class="forget-pwd">
+        <div class="login-password">
+          <el-input
+            v-model="input"
+            style="width: 300px"
+            type="password"
+            placeholder="请输入密码"
+            size="large"
+            show-password
+            :prefix-icon="Lock"
+          />
+        </div>
+        <div class="login-btn">
+          <el-button type="primary" plain>登录</el-button>
+        </div>
+        <div class="login-text">
+          <div class="remain-pwd">
+            <el-checkbox v-model="checked" label="记住密码" size="large" />
+          </div>
+          <div class="forget-pwd">
             <span>忘记密码</span>
+          </div>
         </div>
       </div>
     </div>
@@ -51,21 +55,34 @@ const checked = ref(true);
 .login-contain {
   width: 100vw;
   height: 100vh;
-  // background-image: url(@/assets/imgs/1.jpg);
   background-size: cover;
-  background-position: center;
   .login-box {
-    width: 500px;
-    height: 600px;
-    background-color: pink;
+    width: 50%;
+    height: 500px;
+    // background-color: pink;
     position: absolute;
     top: 20%;
-    left: 35%;
+    left: 28%;
+    display: flex;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    .login-box-left{
+      width: 400px;
+      height: 100%;
+      background-image: url(../../assets/imgs/2.jpg);
+      background-size: cover;
+      background-position: center;
+      border-radius: 20px 0 0 20px;
+      margin-right: 20px;
+    }
+    .login-box-right{
+      flex: 1;
+      text-align: center;
+    }
     .login-logo {
       text-align: center;
       padding-top: 50px;
       font-size: 40px;
-      color: #fff;
       font-weight: bold;
       font-family: "Microsoft YaHei";
     }
@@ -77,23 +94,19 @@ const checked = ref(true);
       text-align: center;
       padding-top: 50px;
     }
-   .login-btn {
+    .login-btn {
       text-align: center;
       padding-top: 50px;
     }
-    .login-text{
+    .login-text {
       padding-top: 20px;
       display: flex;
       justify-content: space-around;
-      .remain-pwd{
-        color: #fff;
-      }
-     .forget-pwd{
-        color: #fff;
+      .forget-pwd {
         font-size: 14px;
         line-height: 40px;
-        &:hover{
-            color: red;
+        &:hover {
+          color: red;
           cursor: pointer;
         }
       }
@@ -103,18 +116,16 @@ const checked = ref(true);
 ::v-deep .el-input__wrapper {
   border-radius: 100px;
 }
-.el-button{
-    width: 300px;
-    height: 50px;
-    border-radius: 100px;
-    color: #fff;
-    background-color: #409EFF;
-    font-size: 20px;
-    font-weight: bold;
-}
-.el-checkbox{
+.el-button {
+  width: 300px;
+  height: 50px;
+  border-radius: 100px;
   color: #fff;
+  background-color: #409eff;
   font-size: 20px;
-
+  font-weight: bold;
+}
+.el-checkbox {
+  font-size: 20px;
 }
 </style>

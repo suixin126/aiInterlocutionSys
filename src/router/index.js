@@ -7,15 +7,20 @@ const routes = [
     component: () => import("@/views/login/Login.vue"),
   },
   {
+    path: "/resetPassword",
+    name: "resetPassword",
+    component: () => import("@/views/resetpassword/ResetPassword.vue"),
+  },
+  {
     path: "/",
     name: "home",
-    redirect:'/study_and_practice',
+    redirect: "/study_and_practice",
     component: () => import("@/views/home/Home.vue"),
     children: [
       {
-        path:'study_and_practice',
-        name:'study_and_practice',
-        component:()=>import('@/views/study_and_practice/index.vue')
+        path: "study_and_practice",
+        name: "study_and_practice",
+        component: () => import("@/views/study_and_practice/index.vue"),
       },
       {
         path: "/study",
@@ -23,10 +28,10 @@ const routes = [
         component: () => import("@/views/study/Study.vue"),
       },
       {
-        path:'/practice',
-        name:'practice',
-        component:()=>import('@/views/study/Practice.vue')
-      }
+        path: "/practice",
+        name: "practice",
+        component: () => import("@/views/study/Practice.vue"),
+      },
     ],
   },
 ];
