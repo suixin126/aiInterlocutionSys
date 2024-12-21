@@ -27,7 +27,7 @@
       <el-button color="#626aef" :dark="isDark" class="button" plain>更改密码</el-button>
       <div class="remeberpassword">
         <el-form-item label="想起密码？" prop="pass">
-          <el-link type="primary">去登录</el-link>
+          <el-link type="primary" @click="toLogin()">去登录</el-link>
         </el-form-item>
       </div>
     </div>
@@ -37,18 +37,24 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const toLogin = () => {
+  router.push('/login')
+}
 const input = ref('')
 </script>
 
 <style scoped>
 .container {
   width: 50%;
+  height: 500px;
   display: flex;
   justify-content: center;
   text-align: center;
-  margin: 20vh auto;
-  border-radius: 10px;
-
+  margin: 15vh auto;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .left_container {
@@ -61,16 +67,12 @@ const input = ref('')
 
 
 .right_container {
-  padding: 50px 0px;
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 60%;
   height: 100%;
   justify-content: center;
   border-color: #cdcdcd;
-  border-style: solid;
-  border-width: 0.1px;
-  border-radius: 0px 10px 10px 0px;
 }
 
 .input_container {
@@ -84,10 +86,12 @@ const input = ref('')
 }
 
 .button {
-  width: calc(70% - 100px);
+  width: calc(60% - 20px);
   margin-top: 5px;
   margin-left: auto;
   margin-right: calc(50% - 100px);
+  background-color: #409eff;
+  color: #fff;
 }
 
 .remeberpassword {
