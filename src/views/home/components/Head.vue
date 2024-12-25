@@ -10,7 +10,7 @@
       <el-sub-menu index="3">
         <template #title>个人信息</template>
         <el-menu-item index="/resetPassword">修改密码</el-menu-item>
-        <el-menu-item index="/login">退出登录</el-menu-item>
+        <el-menu-item @click="exit">退出登录</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </div>
@@ -18,10 +18,16 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const activeIndex = ref("1");
 const handleSelect = (key, keyPath) => {
   console.log(key, keyPath);
+};
+const exit = () => {
+  localStorage.removeItem("token");
+  router.push({ path: "/login" });
 };
 </script>
 

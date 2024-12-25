@@ -5,9 +5,10 @@ import { ElMessage } from 'element-plus'
 // 创建axios实例
 const service = axios.create({
     // 接口地址
-    baseURL: "http://10.25.32.246:8080",
+    baseURL: "http://192.168.45.1:8080",
+    //"http://10.25.32.246:8080"
     // 超时时间
-    timeout: 5000
+    timeout: 10000
 })
 // 请求拦截器
 service.interceptors.request.use(

@@ -2,11 +2,10 @@ import request from '../request/request.js'
 
 const http = {
     // get请求
-    get(url, params, headers) {
+    get(url, headers) {
         return request({
             url: url,
             method: 'get',
-            params: params,
             headers: headers
         })
     },

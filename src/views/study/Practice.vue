@@ -15,14 +15,27 @@
           <div class="question_text">
             {{ current_question }}
           </div>
-          <div class="answer_area">
-            <el-input v-model="textarea" maxlength="100" placeholder="请输入你的答案" show-word-limit type="textarea"
-              @change="setAnswer()" />
-          </div>
-          <div class="next_question">
-            <el-button type="info" plain v-show="index" class="info_button" @click="previous_question()">上一题</el-button>
-            <el-button type="info" plain v-show="index < 4" class="info_button" @click="next_question()">下一题</el-button>
-            <el-button type="info" plain v-show="index == 4" class="info_button" @click="submit()">提交</el-button>
+          <div class="loadingContainer" v-loading="loading" element-loading-text="Loading..."
+            :element-loading-spinner="svg" element-loading-svg-view-box="-10, -10, 50, 50"
+            element-loading-background="rgba(255, 255, 255, 0.8)">
+            <div class="answer_area">
+              <el-input v-model="textarea" maxlength="200" placeholder="请输入你的答案" show-word-limit type="textarea" />
+            </div>
+            <div class="right_answer_area">
+              <el-input v-model="right_answer_area" show-word-limit type="textarea" />
+            </div>
+            <div class="next_question">
+              <el-button type="info" plain v-show="index" class="info_button"
+                @click="previous_question()">上一题</el-button>
+              <el-button type="info" plain v-show="index <= 4 && IsSubmit[index] == 0" class="info_button"
+                @click="submit_answer()">
+                提交答案
+              </el-button>
+              <el-button type="info" plain v-show="index < 4 && IsSubmit[index] == 1" class="info_button"
+                @click="next_question()">
+                下一题
+              </el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -34,85 +47,117 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { submitAnswer } from "@/api/api.js";
+import { getPractice } from "@/api/api.js";
 const router = useRouter();
 const textarea = ref("");
+const loading = ref(false);
+const svg = `
+        <path class="path" d="
+          M 30 15
+          L 28 17
+          M 25.61 25.61
+          A 15 15, 0, 0, 1, 15 30
+          A 15 15, 0, 1, 1, 27.99 7.5
+          L 15 15
+        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
+      `;
 const index = ref(0);
-const questionList = ref(
-  [{
-    id: 1,
-    text: "全面推进依法治国1",
-    answer: ''
-  },
-  {
-    id: 2,
-    text: "全面推进依法治国2",
-    answer: ''
-  },
-  {
-    id: 3,
-    text: "全面推进依法治国3",
-    answer: ''
-  },
-  {
-    id: 4,
-    text: "全面推进依法治国4",
-    answer: ''
-  },
-  {
-    id: 5,
-    text: "全面推进依法治国5",
-    answer: ''
-  }]);
-const current_question = ref(questionList.value[0].text);
+const questionList = ref([])//问题列表
+const answerList = ref([])//答案列表
+const MyAnswer = ref([]);//我的答案
+const current_question = ref("");
+const right_answer_area = ref("");
+const IsSubmit = ref([0, 0, 0, 0, 0])
+// 初始化问题列表
+onMounted(() => {
+  getPractice({
+    moduleId: 1
+  }, {
+    "Content-Type": "application/json",
+  }).then((res) => {
+    questionList.value = res.data.data;
+    console.log(questionList.value);
+    current_question.value = questionList.value[index.value].question;
+  }).catch((err) => {
+    console.log(err);
+  })
+});
 //点击上一题
 const previous_question = () => {
   if (index.value == 1) {
     document.getElementsByClassName("next_question")[0].style.justifyContent = "right";
   }
-  if (index.value <= 0) {
+  index.value -= 1;
+  setAnswer();
+};
+//点击提交答案
+async function submit_answer() {
+  if (textarea.value == "") {
+    alert("答案不能为空！");
     return;
   }
-  index.value -= 1;
-  current_question.value = questionList.value[index.value].text;
-  clearAnswer();
-};
+  MyAnswer.value.push(textarea.value);
+  loading.value = true;
+  await submitAnswer({
+    "questionId": questionList.value[index.value].id,
+    "answer": textarea.value
+  }, {
+    "Content-Type": "application/json",
+  }).then((res) => {
+    answerList.value.push(res.data.data);
+    console.log(answerList.value);
+  }).catch((err) => {
+    console.log(err);
+  })
+  setAnswer();
+  IsSubmit.value[index.value] = 1;
+}
 //点击下一题
 const next_question = () => {
   if (index.value == 0) {
     document.getElementsByClassName("next_question")[0].style.justifyContent = "space-between";
   }
-  if (index.value >= 5) {
-    return;
-  }
   index.value += 1;
-  current_question.value = questionList.value[index.value].text;
   clearAnswer();
-  console.log(questionList.value)
+}
+//清除答案
+const clearAnswer = () => {
+  if (MyAnswer.value[index.value] != null) {
+    setAnswer();
+  }
+  else {
+    current_question.value = questionList.value[index.value].question;
+    textarea.value = "";
+    right_answer_area.value = "";
+    document.getElementsByClassName("right_answer_area")[0].style = "display:none";
+  }
 }
 
 //设置答案
 const setAnswer = () => {
-  questionList.value[index.value].answer = textarea.value;
-}
-//没有答题就清空输入框，答题后保留答案
-const clearAnswer = () => {
-  if (questionList.value[index.value].answer != '') {
-    textarea.value = questionList.value[index.value].answer;
+  current_question.value = questionList.value[index.value].question;
+  textarea.value = MyAnswer.value[index.value];
+  if (answerList.value[index.value].rightOrNot == false) {
+    right_answer_area.value += "回答错误！";
   }
   else {
-    textarea.value = '';
+    right_answer_area.value += "回答正确！";
   }
+  right_answer_area.value += answerList.value[index.value].analyze;
+  let answer = document.getElementsByClassName("right_answer_area")[0]
+  answer.style = "display:block";
+  loading.value = false;
 }
+
 //返回主题列表
 const toHome = () => {
   router.push({ path: "/study_and_practice" })
 }
 
-//提交答案
-const submit = () => {
-}
+
 </script>
 
 <style lang="scss" scoped>
@@ -165,6 +210,11 @@ const submit = () => {
 
 .answer_area {
   height: 50px;
+}
+
+.right_answer_area {
+  display: none;
+  height: fit-content;
 }
 
 .next_question {
