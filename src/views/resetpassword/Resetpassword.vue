@@ -3,7 +3,7 @@
     <div class="left_container">
     </div>
     <div class="right_container">
-      <h3 style="margin-bottom: 20px;">更改密码</h3>
+      <h2 style="margin-bottom: 50px;">更改密码</h2>
       <div class="input_container">
         <el-form-item label="用户名" prop="pass">
           <el-input v-model="input" class="password_input" placeholder="请输入用户名" show-password />
@@ -24,9 +24,9 @@
           <el-input v-model="input" type="password" class="password_input" placeholder="请再次确认密码" show-password />
         </el-form-item>
       </div>
-      <el-button color="#626aef" :dark="isDark" class="button" plain>更改密码</el-button>
-      <div class="remeberpassword">
-        <el-form-item label="想起密码？" prop="pass">
+      <el-button color="#626aef" class="button" plain>更改密码</el-button>
+      <div class="sucess">
+        <el-form-item label="更改完成？" prop="pass">
           <el-link type="primary" @click="toLogin()">去登录</el-link>
         </el-form-item>
       </div>
@@ -77,7 +77,7 @@ const input = ref('')
 
 .input_container {
   margin-left: auto;
-  margin-right: calc(50% - 100px);
+  margin-right: calc(50% - 130px);
 }
 
 .password_input {
@@ -89,14 +89,18 @@ const input = ref('')
   width: calc(60% - 20px);
   margin-top: 5px;
   margin-left: auto;
-  margin-right: calc(50% - 100px);
+  margin-right: calc(50% - 130px);
   background-color: #409eff;
   color: #fff;
 }
 
-.remeberpassword {
+.sucess {
   display: flex;
-  margin-left: auto;
-  margin-right: calc(50% - 20px);
+  margin: 10px calc(50% - 60px) 0px auto;
+  font-size: small;
+
+  .el-link {
+    font-size: small;
+  }
 }
 </style>

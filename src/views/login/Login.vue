@@ -9,18 +9,15 @@
           <el-input v-model="userName" style="width: 300px" placeholder="请输入用户名" size="large" :prefix-icon="User" />
         </div>
         <div class="login-password">
-          <el-input v-model="input" style="width: 300px" type="password" placeholder="请输入密码" size="large" show-password
-            :prefix-icon="Lock" />
+          <el-input v-model="password" style="width: 300px" type="password" placeholder="请输入密码" size="large"
+            show-password :prefix-icon="Lock" />
         </div>
         <div class="login-btn">
-          <el-button type="primary" plain>登录</el-button>
+          <el-button type="primary" plain @click="userLogin">登录</el-button>
         </div>
         <div class="login-text">
           <div class="remain-pwd">
             <el-checkbox v-model="checked" label="记住密码" size="large" />
-          </div>
-          <div class="forget-pwd" @click="toResetpassword()">
-            <span>忘记密码</span>
           </div>
         </div>
       </div>
@@ -35,12 +32,41 @@ import { User } from "@element-plus/icons-vue";
 // 引入密码图标
 import { Lock } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
+import { login } from "@/api/api.js";
+import { ElMessage } from "element-plus";
 const router = useRouter();
-const toResetpassword = () => {
-  router.push("/resetpassword");
-};
+
 const userName = ref("");
 const checked = ref(true);
+const password = ref("");
+const userLogin = () => {
+  if (userName.value == "") {
+    alert("用户名不能为空");
+    return;
+  }
+  if (password.value == "") {
+    alert("密码不能为空");
+    return;
+  }
+  login({
+    name: userName.value,
+    password: password.value,
+  }, {
+    "Content-Type": "application/json",
+  }).then((res) => {
+    console.log(res);
+    if (res.data.status === 200) {
+      ElMessage.success("登录成功");
+      // 存储token
+      localStorage.setItem("token", res.data.data.token);
+      router.push("/study_and_practice");
+    } else {
+      ElMessage.error("登录失败");
+    }
+  }).catch((err) => {
+    console.log(err);
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -98,15 +124,6 @@ const checked = ref(true);
       display: flex;
       justify-content: space-around;
 
-      .forget-pwd {
-        font-size: 14px;
-        line-height: 40px;
-
-        &:hover {
-          color: red;
-          cursor: pointer;
-        }
-      }
     }
   }
 }

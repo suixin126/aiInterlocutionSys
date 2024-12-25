@@ -12,7 +12,7 @@
       </div>
       <div class="foot">
         <div style="color:red;font-weight:bolder">工地手册第一部分</div>
-        <div><el-button type="primary">练习</el-button></div>
+        <div><el-button type="primary" @click="toPractice">练习</el-button></div>
         <div>已有
           <span style="color:red;font-weight:bolder">500</span>
           人参与学习
@@ -23,6 +23,11 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const toPractice = () => {
+  router.push('/practice');
+}
 </script>
 
 <style lang="scss" scoped>

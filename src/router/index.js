@@ -13,12 +13,11 @@ const routes = [
   },
   {
     path: "/",
-    name: "home",
     redirect: "/study_and_practice",
     component: () => import("@/views/home/Home.vue"),
     children: [
       {
-        path: "study_and_practice",
+        path: "/study_and_practice",
         name: "study_and_practice",
         component: () => import("@/views/study_and_practice/index.vue"),
       },

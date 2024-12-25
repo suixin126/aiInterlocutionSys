@@ -9,6 +9,7 @@
       <el-menu-item index="/exam"> 考核模块 </el-menu-item>
       <el-sub-menu index="3">
         <template #title>个人信息</template>
+        <el-menu-item index="/resetPassword">修改密码</el-menu-item>
         <el-menu-item index="/login">退出登录</el-menu-item>
       </el-sub-menu>
     </el-menu>

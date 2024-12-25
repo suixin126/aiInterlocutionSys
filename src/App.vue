@@ -1,7 +1,7 @@
 <template>
-<div>
-<router-view></router-view>
-</div>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script setup>
@@ -9,9 +9,10 @@
 </script>
 
 <style lang="scss">
-*,html,body{
+*,
+html,
+body {
   margin: 0;
   padding: 0;
-  // overflow: hidden;
 }
 </style>
