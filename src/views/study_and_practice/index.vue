@@ -48,20 +48,28 @@
         <span>工人完成进度</span>
         <span>10%</span>
       </div>
-      <div class="item" v-for="(item, index) in test" :key="index">
+      <div class="item" v-for="(item, index) in modules_info" :key="index">
         <div class="item-content">
           <img src="../../assets/imgs/1.jpg" alt="" />
           <div class="item-text">
-            <p style="color:#000000;font-size:18px;font-weight:bolder">{{ item.title }}</p>
-            <p style="color:#c79367;font-size:16px">访问量：{{ item.number }}</p>
+            <p style="color: #000000; font-size: 18px; font-weight: bolder">
+              {{ item.name }}
+            </p>
+            <p style="color: #c79367; font-size: 16px">
+              访问量：{{ item.views }}
+            </p>
             <div class="btn">
-              <el-button @click.prevent="toStudy()" type="danger">学习</el-button>
-              <el-button @click.prevent="toPractice()" type="primary">练习</el-button>
+              <el-button @click.prevent="toStudy(index)" type="danger"
+                >学习</el-button
+              >
+              <el-button @click.prevent="toPractice(index)" type="primary"
+                >练习</el-button
+              >
             </div>
           </div>
         </div>
         <div class="item-status">
-          <img src="./imgs/完成.png" alt="" />
+          <img src="./imgs/未完成.png" alt="" />
         </div>
       </div>
     </div>
@@ -69,45 +77,45 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { getVisit, addVisit } from "@/api/api.js";
+const router = useRouter();
 const toStudy = (id) => {
-  router.push({ path: '/study', query: { id: id } })
-}
+  // 访问量+1
+  addVisit(
+    {
+      id: id + 1,
+    },
+    {
+      "Content-Type": "application/json",
+    }
+  );
+  // 跳转到学习页面
+  router.push({
+    path: "/study",
+    query: {
+      title: modules_info.value[id].name,
+    },
+  });
+  // 滚动到页面顶部
+  window.scrollTo(0, 0);
+};
 const toPractice = (id) => {
-  router.push({ path: '/practice', query: { id: id } })
-}
-const test = ref([
-  {
-    title: '齐天大圣',
-    number: 10,
-  },
-  {
-    title: '孙悟空',
-    number: 8,
-  },
-  {
-    title: '猪八戒',
-    number: 6,
-  },
-  {
-    title: '沙和尚',
-    number: 4,
-  },
-  {
-    title: '唐僧',
-    number: 2,
-  },
-  {
-    title: '白骨精',
-    number: 18,
-  },
-  {
-    title: '蜘蛛精',
-    number: 30,
-  },
-])
+  router.push({ path: "/practice", query: { id: id } });
+};
+const modules_info = ref([]);
+
+
+onMounted(() => {
+  // 获取访问量
+  getVisit({
+    "Content-Type": "application/json",
+  }).then((res) => {
+    console.log(res.data);
+    modules_info.value = res.data.data;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -276,7 +284,6 @@ const test = ref([
           font-size: 20px;
 
           .btn {
-
             .study-button,
             .practice-button {
               width: 80px;
