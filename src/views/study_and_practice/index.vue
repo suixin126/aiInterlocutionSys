@@ -59,17 +59,14 @@
               访问量：{{ item.views }}
             </p>
             <div class="btn">
-              <el-button @click.prevent="toStudy(index)" type="danger"
-                >学习</el-button
-              >
-              <el-button @click.prevent="toPractice(index)" type="primary"
-                >练习</el-button
-              >
+              <el-button @click.prevent="toStudy(index)" type="danger">学习</el-button>
+              <el-button @click.prevent="toPractice(index)" type="primary">练习</el-button>
             </div>
           </div>
         </div>
         <div class="item-status">
-          <img src="./imgs/未完成.png" alt="" />
+          <img v-if="study_status && practice_status" src="./imgs/完成.png" alt="" />
+          <img v-else src="./imgs/未完成.png" alt="" />
         </div>
       </div>
     </div>
@@ -81,6 +78,8 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getVisit, addVisit } from "@/api/api.js";
 const router = useRouter();
+const study_status = ref(0);
+const practice_status = ref(0);
 const toStudy = (id) => {
   // 访问量+1
   addVisit(
@@ -91,23 +90,42 @@ const toStudy = (id) => {
       "Content-Type": "application/json",
     }
   );
+  localStorage.setItem("study_status", 1);
   // 跳转到学习页面
   router.push({
     path: "/study",
     query: {
       title: modules_info.value[id].name,
+      id: id,
     },
   });
   // 滚动到页面顶部
   window.scrollTo(0, 0);
 };
 const toPractice = (id) => {
+  // 访问量+1
+  addVisit(
+    {
+      id: id + 1,
+    },
+    {
+      "Content-Type": "application/json",
+    }
+  );
+  localStorage.setItem("practice_status", 1);
   router.push({ path: "/practice", query: { id: id } });
 };
 const modules_info = ref([]);
 
 
 onMounted(() => {
+  // 判断是否完成学习练习
+  if (localStorage.getItem("study_status") == 1) {
+    study_status.value = 1;
+  }
+  if (localStorage.getItem("practice_status") == 1) {
+    practice_status.value = 1;
+  }
   // 获取访问量
   getVisit({
     "Content-Type": "application/json",
@@ -284,6 +302,7 @@ onMounted(() => {
           font-size: 20px;
 
           .btn {
+
             .study-button,
             .practice-button {
               width: 80px;

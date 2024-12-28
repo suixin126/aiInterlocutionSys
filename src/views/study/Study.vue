@@ -32,12 +32,19 @@
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
-const toPractice = () => {
-  router.push("/practice");
-};
+
 // 获取路由的携带的参数值
 const route = useRoute();
+const id = route.query.id;
 const title = route.query.title;
+const toPractice = () => {
+  router.push({
+    path: "/practice",
+    query: {
+      id: id,
+    },
+  });
+};
 // 具体内容
 const content = ref();
 
@@ -337,6 +344,7 @@ onMounted(() => {
       text-align: center;
       display: flex;
       justify-content: space-between;
+
       .el-button {
         width: 100px;
         height: 40px;

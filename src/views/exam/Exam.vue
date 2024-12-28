@@ -47,17 +47,29 @@
 
 <script setup>
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getUserInfo } from "@/api/api.js";
 const count = ref(0);
 const router = useRouter();
 const answerQuestion = () => {
+    router.push({ path: "/test" });
     if (count.value == 5) {
         alert("答题次数已用完");
         return;
     }
     count.value++;
 };
+onMounted(() => {
+    getUserInfo({
+    }, {
+        "Content-Type": "application/json",
+    }).then((res) => {
+        console.log(res);
+    }).catch((err) => {
+        console.log(err);
+    })
+})
 </script>
 
 <style lang="scss" scoped>

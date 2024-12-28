@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <div class="subject">
-        全面推进依法治国
+        {{ modules[id] }}
       </div>
       <div class="question_area">
         <div class="inner_container">
@@ -48,10 +48,11 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { submitAnswer } from "@/api/api.js";
 import { getPractice } from "@/api/api.js";
 const router = useRouter();
+const route = useRoute();
 const textarea = ref("");
 const loading = ref(false);
 const svg = `
@@ -71,15 +72,16 @@ const MyAnswer = ref([]);//我的答案
 const current_question = ref("");
 const right_answer_area = ref("");
 const IsSubmit = ref([0, 0, 0, 0, 0])
+const modules = ["工地施工安全", "施工现场安全防护用品", "工地消防安全", "工地用电安全"]
+const id = route.query.id;//获取模块id
 // 初始化问题列表
 onMounted(() => {
   getPractice({
-    moduleId: 1
+    moduleId: id
   }, {
     "Content-Type": "application/json",
   }).then((res) => {
     questionList.value = res.data.data;
-    console.log(questionList.value);
     current_question.value = questionList.value[index.value].question;
   }).catch((err) => {
     console.log(err);
@@ -108,7 +110,6 @@ async function submit_answer() {
     "Content-Type": "application/json",
   }).then((res) => {
     answerList.value.push(res.data.data);
-    console.log(answerList.value);
   }).catch((err) => {
     console.log(err);
   })
