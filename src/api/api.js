@@ -31,3 +31,15 @@ export function changePhone(params, headers) {
 export function changePassword(params, headers) {
     return http.post("/user/updatePassword", params, headers);
 }
+//获取试卷
+export function getExam(headers) {
+    return http.get("/exam/getExam", headers);
+}
+//提交试卷
+export function answerExam(params, headers) {
+    return http.post("/exam/answerExam", params, headers);
+}
+//查询分数
+export function getScore(headers) {
+    return http.get("/record/getPoints", headers);
+}

@@ -4,21 +4,17 @@
             综合评价
         </div>
         <div class="container">
-            <h3>工龄三年 综合评价</h3>
+            <h3>综合评价</h3>
             <el-descriptions title="基础信息" direction="vertical" border style="margin-top: 20px">
                 <el-descriptions-item :rowspan="2" :width="140" label="Photo" align="center">
                     <el-image style="width: 100px; height: 100px"
                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                 </el-descriptions-item>
-                <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-                <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-                <el-descriptions-item label="Place">Suzhou</el-descriptions-item>
-                <el-descriptions-item label="Remarks">
-                    <el-tag size="small">School</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="Address">
-                    No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
-                </el-descriptions-item>
+                <el-descriptions-item label="Username">{{ userInfo.name }}</el-descriptions-item>
+                <el-descriptions-item label="Telephone">{{ userInfo.phone }}</el-descriptions-item>
+                <el-descriptions-item label="Gender" v-if="userInfo.gender == 1">男</el-descriptions-item>
+                <el-descriptions-item label="Gender" v-else></el-descriptions-item>
+                <el-descriptions-item label="Age">{{ userInfo.age }}</el-descriptions-item>
             </el-descriptions>
             <div class="answer_number">
                 <div>剩余答题次数：<span style="color: red;">{{ 5 - count }}次 </span></div>
@@ -26,17 +22,17 @@
             </div>
 
             <div class="record_area" id="record_area">
-                <div class="card" v-for="index in count">
+                <div class="card" v-for="(item, index) in examInfo">
                     <div class="card_header">
                         <img src="../exam/image/img_01.png" alt="">
-                        <div>第{{ index }}次评价</div>
+                        <div>第{{ index + 1 }}次评价</div>
                     </div>
                     <div class="card_body">
-                        <el-form-item label="考核时间" prop="pass">
+                        <el-form-item label="考核时间:" prop="pass">
+                            {{ formatDate(item.time) }}
                         </el-form-item>
-                        <el-form-item label="考核用时" prop="pass">
-                        </el-form-item>
-                        <el-form-item label="考核结果" prop="pass">
+                        <el-form-item label="考核结果:" prop="pass">
+                            {{ item.score }}分
                         </el-form-item>
                     </div>
                 </div>
@@ -49,27 +45,54 @@
 
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getUserInfo } from "@/api/api.js";
-const count = ref(0);
+import { getUserInfo, getScore } from "@/api/api.js";
+const userInfo = ref({});
 const router = useRouter();
-const answerQuestion = () => {
-    router.push({ path: "/test" });
-    if (count.value == 5) {
-        alert("答题次数已用完");
-        return;
-    }
-    count.value++;
-};
+const examInfo = ref([]);
+//页面初始化
 onMounted(() => {
+    //获取用户信息
     getUserInfo({
     }, {
         "Content-Type": "application/json",
     }).then((res) => {
-        console.log(res);
+        userInfo.value = res.data.data;
+    }).catch((err) => {
+        console.log(err);
+    })
+    //获取答题信息
+    getScore({
+    }, {
+        "Content-Type": "application/json",
+    }).then((res) => {
+        examInfo.value = res.data.data;
+        console.log(examInfo.value);
     }).catch((err) => {
         console.log(err);
     })
 })
+//更新答题次数
+const answerQuestion = () => {
+    if (count.value == 5) {
+        alert("答题次数已用完");
+        return;
+    }
+    count.value += 1;
+    router.push({ path: "/test" });
+};
+//转换时间戳
+function formatDate(time) {
+    const date = new Date(time);
+    return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false // 24小时制
+    });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -157,6 +180,7 @@ onMounted(() => {
                 width: 80%;
                 margin: 10px auto;
                 font-size: small;
+                font-weight: lighter;
             }
         }
 

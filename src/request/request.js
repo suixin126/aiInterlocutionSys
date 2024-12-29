@@ -7,7 +7,7 @@ const service = axios.create({
     // 接口地址
     baseURL: "http://10.25.32.246:8080",
     // 超时时间
-    timeout: 10000
+    timeout: 10000,
 })
 // 请求拦截器
 service.interceptors.request.use(
