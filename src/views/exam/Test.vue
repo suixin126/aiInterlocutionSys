@@ -25,7 +25,8 @@
                         <el-button type="info" plain v-show="index < 24" class="info_button" @click="next_question()">
                             下一题
                         </el-button>
-                        <el-button type="info" plain v-show="index == 24" class="info_button" @click="submit_answer()">
+                        <el-button type="info" plain v-show="index == 24 && flag == false" class="info_button"
+                            @click="submit_answer()">
                             提交答案
                         </el-button>
                     </div>
@@ -34,17 +35,40 @@
             </div>
         </div>
         <div class="buttom_container">
-            <div class="back" @click="toHome()">返回主题列表</div>
+            <div class="back" @click="toExam()">返回考核页面</div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { getExam } from "../../api/api";
+import { answerExam } from "../../api/api";
+import { ElMessage } from "element-plus";
+const router = useRouter();
 const index = ref(0);//当前问题索引
+const questionList = ref([]);//问题列表
 const current_question = ref("");//当前问题
 const answerList = ref([])//答案列表
 const textarea = ref("");//当前答案
+const dataList = ref([]);//返回给后端的数据
+const examId = ref(0);//考试id
+const flag = ref(false);//是否提交
+//初始化
+onMounted(() => {
+    getExam({
+    }, {
+        "Content-Type": "application/json",
+    }).then((res) => {
+        console.log(res);
+        questionList.value = res.data.data.questions;
+        examId.value = res.data.data.examId;
+        setAnswer();
+    }).catch((err) => {
+        console.log(err);
+    })
+})
 //点击上一题
 const previous_question = () => {
     if (index.value == 1) {
@@ -63,6 +87,7 @@ const next_question = () => {
 }
 //设置答案
 const setAnswer = () => {
+    current_question.value = questionList.value[index.value].question;
     //如果答案列表有数据则渲染进页面
     if (answerList.value[index.value] != "") {
         textarea.value = answerList.value[index.value];
@@ -70,7 +95,6 @@ const setAnswer = () => {
     else {
         textarea.value = "";
     }
-    console.log(answerList.value);
 }
 //修改答案
 const changeAnswer = () => {
@@ -79,10 +103,39 @@ const changeAnswer = () => {
 
 //提交答案
 const submit_answer = () => {
-    if (answerList.value.length < 25) {
-        alert("存在未完成题目！");
+    if (Object.keys(answerList.value).length < 25) {
+        alert("存在未完成题目");
         return;
     }
+    flag.value = true;
+    for (let i = 0; i < 25; i++) {
+        let data = {
+            "questionId": questionList.value[i].id,
+            "answer": answerList.value[i]
+        }
+        dataList.value.push(data);
+    }
+    answerExam({
+        "examId": examId.value,
+        "answers": dataList.value
+    }
+        , {
+            "Content-Type": "application/json",
+        }).then((res) => {
+            console.log(res);
+            ElMessage.success("提交成功,请返回考核页面查看考核结果");
+        }).catch((err) => {
+            console.log(err);
+        })
+};
+
+//返回考核页面
+const toExam = () => {
+    // if (Object.keys(answerList.value).length < 25 || flag.value) {
+    //     alert("存在未完成题目或未提交题目！");
+    //     return;
+    // }
+    router.push({ path: "/exam" });
 }
 
 </script>
