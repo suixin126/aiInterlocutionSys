@@ -13,7 +13,6 @@ const service = axios.create({
 service.interceptors.request.use(
     (config) => {
         config.data = JSON.stringify(config.data);
-
         const token = localStorage.getItem('token');
         // console.log("token:" + token);
         if (token) {

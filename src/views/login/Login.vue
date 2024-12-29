@@ -4,7 +4,9 @@
     <div class="login-box">
       <div class="login-box-left"></div>
       <div class="login-box-right">
-        <div class="login-logo">LOGO</div>
+        <div class="login-logo">
+          <img src="../../assets/imgs/logo.png" alt="">
+        </div>
         <div class="login-user_name">
           <el-input v-model="userName" style="width: 300px" placeholder="请输入用户名" size="large" :prefix-icon="User" />
         </div>
@@ -26,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 // 引入用户名图标
 import { User } from "@element-plus/icons-vue";
 // 引入密码图标
@@ -57,6 +59,14 @@ const userLogin = () => {
     console.log(res);
     if (res.data.status === 200) {
       ElMessage.success("登录成功");
+      // 记住密码功能
+      if (checked.value) {
+        localStorage.setItem("userName", userName.value);
+        localStorage.setItem("password", password.value);
+      } else {
+        localStorage.removeItem("userName");
+        localStorage.removeItem("password");
+      }
       // 存储token
       localStorage.setItem("token", res.data.data.token);
       router.push("/study_and_practice");
@@ -67,6 +77,15 @@ const userLogin = () => {
     console.log(err);
   });
 }
+onMounted(()=>{
+  // 从localStorage中获取用户名和密码
+  if(localStorage.getItem("userName") != null){
+    userName.value = localStorage.getItem("userName");
+  }
+  if(localStorage.getItem("password")!= null){
+    password.value = localStorage.getItem("password");
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -98,15 +117,17 @@ const userLogin = () => {
 
     .login-logo {
       text-align: center;
-      padding-top: 50px;
-      font-size: 40px;
-      font-weight: bold;
-      font-family: "Microsoft YaHei";
+      padding-top: 40px;
+      img{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
     }
 
     .login-user_name {
       text-align: center;
-      padding-top: 50px;
+      padding-top: 40px;
     }
 
     .login-password {

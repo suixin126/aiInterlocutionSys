@@ -2,8 +2,8 @@
   <div class="head-contain">
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect" router>
-      <el-menu-item index="0">
-        <img style="width: 100px" src="@/assets/imgs/1.jpg" alt="Element logo" />
+      <el-menu-item>
+        <h1>工地知识问答</h1>
       </el-menu-item>
       <el-menu-item index="/"> 学习模块 </el-menu-item>
       <el-menu-item index="/exam"> 考核模块 </el-menu-item>

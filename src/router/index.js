@@ -2,16 +2,6 @@ import { createWebHashHistory, createRouter } from "vue-router";
 
 const routes = [
   {
-    path: "/login",
-    name: "login",
-    component: () => import("@/views/login/Login.vue"),
-  },
-  {
-    path: "/resetPassword",
-    name: "resetPassword",
-    component: () => import("@/views/resetpassword/Resetpassword.vue"),
-  },
-  {
     path: "/",
     redirect: "/study_and_practice",
     component: () => import("@/views/home/Home.vue"),
@@ -42,20 +32,28 @@ const routes = [
         component: () => import("@/views/exam/Test.vue"),
       },
       {
-        path: '/personalInfo',
-        name: 'personalInfo',
-        component: () => import('@/views/personalInfo/PersonalInfo.vue')
-      }
+        path: "/personalInfo",
+        name: "personalInfo",
+        component: () => import("@/views/personalInfo/PersonalInfo.vue"),
+      },
     ],
   },
-
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/login/Login.vue"),
+  },
+  {
+    path: "/resetPassword",
+    name: "resetPassword",
+    component: () => import("@/views/resetpassword/Resetpassword.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-
 
 // 前置守卫
 router.beforeEach((to, from, next) => {
@@ -70,6 +68,5 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
-
 
 export default router;

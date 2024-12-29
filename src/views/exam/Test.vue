@@ -131,10 +131,10 @@ const submit_answer = () => {
 
 //返回考核页面
 const toExam = () => {
-    // if (Object.keys(answerList.value).length < 25 || flag.value) {
-    //     alert("存在未完成题目或未提交题目！");
-    //     return;
-    // }
+    if (Object.keys(answerList.value).length < 25 || flag.value) {
+        alert("存在未完成题目或未提交题目！");
+        return;
+    }
     router.push({ path: "/exam" });
 }
 
