@@ -59,12 +59,8 @@
               访问量：{{ item.views }}
             </p>
             <div class="btn">
-              <el-button @click.prevent="toStudy(index)" type="danger"
-                >学习</el-button
-              >
-              <el-button @click.prevent="toPractice(index)" type="primary"
-                >练习</el-button
-              >
+              <el-button @click.prevent="toStudy(index)" type="danger">学习</el-button>
+              <el-button @click.prevent="toPractice(index)" type="primary">练习</el-button>
             </div>
           </div>
         </div>
@@ -151,7 +147,7 @@ onMounted(async () => {
       console.error("图片预加载失败:", error);
     });
   // 获取访问量
-  getVisit({
+  await getVisit({
     "Content-Type": "application/json",
   })
     .then((res) => {
@@ -165,7 +161,7 @@ onMounted(async () => {
       }
     });
   // 获取用户信息
-  getUserInfo({
+  await getUserInfo({
     "Content-Type": "application/json",
   })
     .then((res) => {
@@ -367,6 +363,7 @@ onMounted(async () => {
           font-size: 20px;
 
           .btn {
+
             .study-button,
             .practice-button {
               width: 80px;

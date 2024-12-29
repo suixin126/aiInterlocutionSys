@@ -107,7 +107,6 @@ const submit_answer = () => {
         alert("存在未完成题目");
         return;
     }
-    flag.value = true;
     for (let i = 0; i < 25; i++) {
         let data = {
             "questionId": questionList.value[i].id,
@@ -124,6 +123,7 @@ const submit_answer = () => {
         }).then((res) => {
             console.log(res);
             ElMessage.success("提交成功,请返回考核页面查看考核结果");
+            flag.value = true;
         }).catch((err) => {
             console.log(err);
         })
@@ -131,8 +131,8 @@ const submit_answer = () => {
 
 //返回考核页面
 const toExam = () => {
-    if (Object.keys(answerList.value).length < 25 || flag.value) {
-        alert("存在未完成题目或未提交题目！");
+    if (flag.value == false) {
+        alert("未提交题目！");
         return;
     }
     router.push({ path: "/exam" });

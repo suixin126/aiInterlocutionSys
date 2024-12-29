@@ -47,3 +47,7 @@ export function getScore(headers) {
 export function updateUserModule(params, headers) {
     return http.post("/user/updateUserModule", params, headers);
 }
+//获取已学习人数
+export function getStudyNum(query, headers) {
+    return http.get(`/module/studiedNum?moduleId=${query.moduleId}`, headers);
+}

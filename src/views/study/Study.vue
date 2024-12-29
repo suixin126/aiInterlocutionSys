@@ -20,7 +20,7 @@
         </div>
         <div style="margin-right:20px">
           已有
-          <span style="color: red; font-weight: bolder">500</span>
+          <span style="color: red; font-weight: bolder">{{ studyNum }}</span>
           人参与学习
         </div>
       </div>
@@ -31,11 +31,12 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { getStudyNum } from "@/api/api";
 const router = useRouter();
-
+const studyNum = ref(0);
 // 获取路由的携带的参数值
 const route = useRoute();
-const id = route.query.id;
+const id = parseInt(route.query.id);
 const title = route.query.title;
 const toPractice = () => {
   router.push({
@@ -49,6 +50,17 @@ const toPractice = () => {
 const content = ref();
 
 onMounted(() => {
+  // 获取已学习人数
+  getStudyNum({
+    moduleId: id + 1,
+  }, {
+    "Content-Type": "application/json",
+  }).then((res) => {
+    console.log(res);
+    studyNum.value = res.data.data;
+  }).catch((err) => {
+    console.log(err);
+  });
   // 获取具体内容
   if (title == "工地施工安全") {
     content.value = [

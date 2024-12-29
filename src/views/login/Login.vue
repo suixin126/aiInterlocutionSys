@@ -7,8 +7,8 @@
         <div class="login-logo">
           <img src="../../assets/imgs/logo.png" alt="">
         </div>
-        <div class="login-user_name">
-          <el-input v-model="userName" style="width: 300px" placeholder="请输入用户名" size="large" :prefix-icon="User" />
+        <div class="login-phone">
+          <el-input v-model="userPhone" style="width: 300px" placeholder="请输入手机号" size="large" :prefix-icon="User" />
         </div>
         <div class="login-password">
           <el-input v-model="password" style="width: 300px" type="password" placeholder="请输入密码" size="large"
@@ -38,11 +38,11 @@ import { login } from "@/api/api.js";
 import { ElMessage } from "element-plus";
 const router = useRouter();
 
-const userName = ref("");
+const userPhone = ref("");
 const checked = ref(true);
 const password = ref("");
 const userLogin = () => {
-  if (userName.value == "") {
+  if (userPhone.value == "") {
     alert("用户名不能为空");
     return;
   }
@@ -51,7 +51,7 @@ const userLogin = () => {
     return;
   }
   login({
-    name: userName.value,
+    phone: userPhone.value,
     password: password.value,
   }, {
     "Content-Type": "application/json",
@@ -61,10 +61,10 @@ const userLogin = () => {
       ElMessage.success("登录成功");
       // 记住密码功能
       if (checked.value) {
-        localStorage.setItem("userName", userName.value);
+        localStorage.setItem("userPhone", userPhone.value);
         localStorage.setItem("password", password.value);
       } else {
-        localStorage.removeItem("userName");
+        localStorage.removeItem("userPhone");
         localStorage.removeItem("password");
       }
       // 存储token
@@ -77,12 +77,12 @@ const userLogin = () => {
     console.log(err);
   });
 }
-onMounted(()=>{
+onMounted(() => {
   // 从localStorage中获取用户名和密码
-  if(localStorage.getItem("userName") != null){
-    userName.value = localStorage.getItem("userName");
+  if (localStorage.getItem("userPhone") != null) {
+    userPhone.value = localStorage.getItem("userPhone");
   }
-  if(localStorage.getItem("password")!= null){
+  if (localStorage.getItem("password") != null) {
     password.value = localStorage.getItem("password");
   }
 })
@@ -118,14 +118,15 @@ onMounted(()=>{
     .login-logo {
       text-align: center;
       padding-top: 40px;
-      img{
+
+      img {
         width: 100px;
         height: 100px;
         border-radius: 50%;
       }
     }
 
-    .login-user_name {
+    .login-phone {
       text-align: center;
       padding-top: 40px;
     }

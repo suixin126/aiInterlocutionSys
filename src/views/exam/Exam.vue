@@ -13,7 +13,7 @@
                 <el-descriptions-item label="Username">{{ userInfo.name }}</el-descriptions-item>
                 <el-descriptions-item label="Telephone">{{ userInfo.phone }}</el-descriptions-item>
                 <el-descriptions-item label="Gender" v-if="userInfo.gender == 1">男</el-descriptions-item>
-                <el-descriptions-item label="Gender" v-else></el-descriptions-item>
+                <el-descriptions-item label="Gender" v-else>女</el-descriptions-item>
                 <el-descriptions-item label="Age">{{ userInfo.age }}</el-descriptions-item>
             </el-descriptions>
             <div class="answer_number">
@@ -31,8 +31,11 @@
                         <el-form-item label="考核时间:" prop="pass">
                             {{ formatDate(item.time) }}
                         </el-form-item>
-                        <el-form-item label="考核结果:" prop="pass">
-                            {{ item.score }}分
+                        <el-form-item label="考核结果:" prop="pass" v-if="item.score == null">
+                            正在改卷中...
+                        </el-form-item>
+                        <el-form-item label="考核结果:" prop="pass" v-else>
+                            {{ item.score }} 分
                         </el-form-item>
                     </div>
                 </div>

@@ -51,6 +51,8 @@ import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { submitAnswer } from "@/api/api.js";
 import { getPractice } from "@/api/api.js";
+import { updateUserModule } from "@/api/api.js";
+import { ElMessage } from "element-plus";
 const router = useRouter();
 const route = useRoute();
 const textarea = ref("");
@@ -73,11 +75,11 @@ const current_question = ref("");
 const right_answer_area = ref("");
 const IsSubmit = ref([0, 0, 0, 0, 0])
 const modules = ["工地施工安全", "施工现场安全防护用品", "工地消防安全", "工地用电安全"]
-const id = route.query.id;//获取模块id
+const id = parseInt(route.query.id);//获取模块id
 // 初始化问题列表
 onMounted(() => {
   getPractice({
-    moduleId: id
+    moduleId: id + 1
   }, {
     "Content-Type": "application/json",
   }).then((res) => {
@@ -115,6 +117,19 @@ async function submit_answer() {
   })
   setAnswer();
   IsSubmit.value[index.value] = 1;
+  //模块完成
+  if (index.value == 4) {
+    updateUserModule({
+      "moduleId": id + 1
+    }, {
+      "Content-Type": "application/json",
+    }).then((res) => {
+      console.log(res);
+      ElMessage.success("恭喜你完成该模块！");
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 }
 //点击下一题
 const next_question = () => {
