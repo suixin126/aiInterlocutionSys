@@ -43,3 +43,7 @@ export function answerExam(params, headers) {
 export function getScore(headers) {
     return http.get("/record/getPoints", headers);
 }
+//模块完成
+export function updateUserModule(params, headers) {
+    return http.post("/user/updateUserModule", params, headers);
+}
