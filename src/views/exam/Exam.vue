@@ -22,7 +22,7 @@
             </div>
 
             <div class="record_area" id="record_area">
-                <div class="card" v-for="(item, index) in examInfo">
+                <div class="card" v-for="(item, index) in examInfo" :key="index">
                     <div class="card_header">
                         <img src="../exam/image/img_01.png" alt="">
                         <div>第{{ index + 1 }}次评价</div>
@@ -49,6 +49,7 @@ import { getUserInfo, getScore } from "@/api/api.js";
 const userInfo = ref({});
 const router = useRouter();
 const examInfo = ref([]);
+const count = ref(0);
 //页面初始化
 onMounted(() => {
     //获取用户信息
@@ -66,6 +67,7 @@ onMounted(() => {
         "Content-Type": "application/json",
     }).then((res) => {
         examInfo.value = res.data.data;
+        count.value = examInfo.value.length;
         console.log(examInfo.value);
     }).catch((err) => {
         console.log(err);
