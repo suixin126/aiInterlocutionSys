@@ -46,11 +46,11 @@
     <div class="s_a_p-contain-body">
       <div class="head">
         <span>工人完成进度</span>
-        <span>10%</span>
+        <span>{{ process }}%</span>
       </div>
       <div class="item" v-for="(item, index) in modules_info" :key="index">
         <div class="item-content">
-          <img src="../../assets/imgs/1.jpg" alt="" />
+          <img :src="item.img" alt="" />
           <div class="item-text">
             <p style="color: #000000; font-size: 18px; font-weight: bolder">
               {{ item.name }}
@@ -59,13 +59,17 @@
               访问量：{{ item.views }}
             </p>
             <div class="btn">
-              <el-button @click.prevent="toStudy(index)" type="danger">学习</el-button>
-              <el-button @click.prevent="toPractice(index)" type="primary">练习</el-button>
+              <el-button @click.prevent="toStudy(index)" type="danger"
+                >学习</el-button
+              >
+              <el-button @click.prevent="toPractice(index)" type="primary"
+                >练习</el-button
+              >
             </div>
           </div>
         </div>
         <div class="item-status">
-          <img v-if="study_status && practice_status" src="./imgs/完成.png" alt="" />
+          <img v-if="item.status" src="./imgs/完成.png" alt="" />
           <img v-else src="./imgs/未完成.png" alt="" />
         </div>
       </div>
@@ -76,10 +80,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getVisit, addVisit } from "@/api/api.js";
+import { getVisit, addVisit, getUserInfo } from "@/api/api.js";
 const router = useRouter();
-const study_status = ref(0);
-const practice_status = ref(0);
 const toStudy = (id) => {
   // 访问量+1
   addVisit(
@@ -90,7 +92,6 @@ const toStudy = (id) => {
       "Content-Type": "application/json",
     }
   );
-  localStorage.setItem("study_status", 1);
   // 跳转到学习页面
   router.push({
     path: "/study",
@@ -112,27 +113,91 @@ const toPractice = (id) => {
       "Content-Type": "application/json",
     }
   );
-  localStorage.setItem("practice_status", 1);
   router.push({ path: "/practice", query: { id: id } });
 };
+// 学习状态
 const modules_info = ref([]);
+// 完成度
+const process = ref(0);
+// 获取图片src
+const getImgSrc = (name) => {
+  return new URL(`../../assets/imgs/${name}.jpg`, import.meta.url).href;
+};
 
+// 预加载图片的函数
+const preloadImages = (images) => {
+  return Promise.all(
+    images.map((src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    })
+  );
+};
 
-onMounted(() => {
-  // 判断是否完成学习练习
-  if (localStorage.getItem("study_status") == 1) {
-    study_status.value = 1;
-  }
-  if (localStorage.getItem("practice_status") == 1) {
-    practice_status.value = 1;
-  }
+// 使用 getImgSrc 函数获取图片 URL 并预加载
+const imgSources = [getImgSrc(1), getImgSrc(2), getImgSrc(3), getImgSrc(4)];
+
+onMounted(async () => {
+  // 调用 preloadImages 函数预加载图片
+  await preloadImages(imgSources)
+    .then(() => {
+      console.log("所有图片预加载完成");
+    })
+    .catch((error) => {
+      console.error("图片预加载失败:", error);
+    });
   // 获取访问量
   getVisit({
     "Content-Type": "application/json",
-  }).then((res) => {
-    console.log(res.data);
-    modules_info.value = res.data.data;
-  });
+  })
+    .then((res) => {
+      console.log(res.data);
+      modules_info.value = res.data.data;
+    })
+    .catch((err) => {
+      // 若token未通过验证，跳转到登录页面
+      if (err.response.status == 401) {
+        router.push({ path: "/login" });
+      }
+    });
+  // 获取用户信息
+  getUserInfo({
+    "Content-Type": "application/json",
+  })
+    .then((res) => {
+      console.log(res.data);
+      if (res.data.data.module1 == 1) {
+        modules_info.value[0].status = true;
+      }
+      if (res.data.data.module2 == 1) {
+        modules_info.value[1].status = true;
+      }
+      if (res.data.data.module3 == 1) {
+        modules_info.value[2].status = true;
+      }
+      if (res.data.data.module4 == 1) {
+        modules_info.value[3].status = true;
+      }
+      // 添加模块图片信息
+      modules_info.value[0].img = imgSources[0];
+      modules_info.value[1].img = imgSources[1];
+      modules_info.value[2].img = imgSources[2];
+      modules_info.value[3].img = imgSources[3];
+    })
+    .then(() => {
+      // 计算完成度
+      let count = 0;
+      for (let i = 0; i < modules_info.value.length; i++) {
+        if (modules_info.value[i].status) {
+          count++;
+        }
+      }
+      process.value = count * 25;
+    });
 });
 </script>
 
@@ -302,7 +367,6 @@ onMounted(() => {
           font-size: 20px;
 
           .btn {
-
             .study-button,
             .practice-button {
               width: 80px;

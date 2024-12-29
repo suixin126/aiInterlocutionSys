@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 // 创建axios实例
 const service = axios.create({
     // 接口地址
-    baseURL: "http://10.25.35.197:8080",
+    baseURL: "http://10.25.32.246:8080",
     // 超时时间
     timeout: 10000
 })
@@ -13,7 +13,6 @@ const service = axios.create({
 service.interceptors.request.use(
     (config) => {
         config.data = JSON.stringify(config.data);
-
         const token = localStorage.getItem('token');
         // console.log("token:" + token);
         if (token) {

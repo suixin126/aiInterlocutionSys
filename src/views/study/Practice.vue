@@ -51,6 +51,7 @@ import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { submitAnswer } from "@/api/api.js";
 import { getPractice } from "@/api/api.js";
+import { ElMessage } from "element-plus";
 const router = useRouter();
 const route = useRoute();
 const textarea = ref("");
@@ -115,6 +116,9 @@ async function submit_answer() {
   })
   setAnswer();
   IsSubmit.value[index.value] = 1;
+  if(index.value == 4) {
+    ElMessage.success("恭喜你完成练习！");
+  }
 }
 //点击下一题
 const next_question = () => {
